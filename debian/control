@@ -2,7 +2,7 @@ Source: noderedrevpinodes-server
 Section: misc
 Priority: optional
 Maintainer: Philipp Rosenberger <p.rosenberger@kunbus.com>
-Build-Depends: debhelper (>= 12)
+Build-Depends: debhelper (>= 10)
 Standards-Version: 4.6.0
 Homepage: https://github.com/erminas/noderedrevpinodes-server
 Vcs-Browser: https://github.com/RevolutionPi/noderedrevpinodes-server
