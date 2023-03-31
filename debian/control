@@ -1,7 +1,7 @@
 Source: noderedrevpinodes-server
 Section: misc
 Priority: optional
-Maintainer: Philipp Rosenberger <p.rosenberger@kunbus.com>
+Maintainer: KUNBUS GmbH <support@kunbus.com>
 Rules-Requires-Root: no
 Homepage: https://github.com/erminas/noderedrevpinodes-server
 Vcs-Browser: https://github.com/RevolutionPi/noderedrevpinodes-server
