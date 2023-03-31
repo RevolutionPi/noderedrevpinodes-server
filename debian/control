@@ -6,14 +6,14 @@ Rules-Requires-Root: no
 Homepage: https://github.com/erminas/noderedrevpinodes-server
 Vcs-Browser: https://github.com/RevolutionPi/noderedrevpinodes-server
 Vcs-Git: https://github.com/RevolutionPi/noderedrevpinodes-server.git
-Build-Depends: debhelper-compat (= 12)
+Build-Depends: debhelper-compat (= 12), dh-python, python3
 Standards-Version: 4.3.0
 
 Package: noderedrevpinodes-server
 Architecture: all
 Depends:
  ${misc:Depends},
- python3 (>= 3.5),
+ ${python3:Depends},
  python3-revpimodio2 (>= 2.5.1),
  python3-bcrypt (>= 3.1.2),
  python3-cryptography (>= 1.7.1),

@@ -3,4 +3,4 @@
 export PYBUILD_NAME=noderedrevpinodes-server
 
 %:
-	dh $@
+	dh $@ --with python3
