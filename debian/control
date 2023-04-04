@@ -5,9 +5,9 @@ Maintainer: KUNBUS GmbH <support@kunbus.com>
 Rules-Requires-Root: no
 Homepage: https://github.com/erminas/noderedrevpinodes-server
 Vcs-Browser: https://github.com/RevolutionPi/noderedrevpinodes-server
-Vcs-Git: https://github.com/RevolutionPi/noderedrevpinodes-server.git
-Build-Depends: debhelper-compat (= 12), dh-python, python3
-Standards-Version: 4.3.0
+Vcs-Git: https://github.com/RevolutionPi/noderedrevpinodes-server.git -b raspios/bullseye
+Build-Depends: debhelper-compat (= 13), dh-python, python3
+Standards-Version: 4.5.1
 
 Package: noderedrevpinodes-server
 Architecture: all
