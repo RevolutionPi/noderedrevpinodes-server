@@ -1,3 +1,21 @@
+noderedrevpinodes-server (1.0.4-1+revpi10+1) buster; urgency=medium
+
+  * Use debhelper-compat instead of the compat file
+  * Avoid newer Standards-Version then provided by the debhelper version
+  * Reorder the control file contents to match our other packages
+  * Tell the package build we don't need root or fakeroot
+  * Use KUNBUS GmbH as maintainer
+  * Remove useless comments from rules file
+  * Drop --with-systemd from rules file
+  * Use dh_python for handling the installation
+  * Fix indention of Depends block
+  * Remove broken watch file
+  * Use correct license for upstream source
+  * Set debian/* under GPL2+ as we usually do
+  * Add the upstream-branch to the gbp.conf
+
+ -- Philipp Rosenberger <p.rosenberger@kunbus.com>  Thu, 06 Apr 2023 08:02:59 +0200
+
 noderedrevpinodes-server (1.0.4-1) stable; urgency=medium
 
   [ jgerlach-erminas ]
