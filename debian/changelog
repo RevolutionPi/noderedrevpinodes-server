@@ -1,3 +1,10 @@
+noderedrevpinodes-server (1.0.5-1+revpi11+2) bullseye; urgency=medium
+
+  * packaging: Add npm archive of revpi-nodes to install on target system
+  * packaging: Add an upgrade script for revpi nodes via npm
+
+ -- Sven Sager <s.sager@kunbus.com>  Mon, 22 May 2023 13:04:23 +0200
+
 noderedrevpinodes-server (1.0.5-1+revpi11+1) bullseye; urgency=medium
 
   [ Dennis Filsinger ]
