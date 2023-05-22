@@ -1,0 +1,3 @@
+[submodule "debian/node-red-contrib-revpi-nodes"]
+	path = debian/node-red-contrib-revpi-nodes
+	url = https://github.com/RevolutionPi/node-red-contrib-revpi-nodes.git
