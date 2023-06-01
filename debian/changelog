@@ -1,3 +1,9 @@
+noderedrevpinodes-server (1.0.5-1+revpi11+2) bullseye; urgency=medium
+
+  * packaging: Add dependency to node-red-contrib-revpi-nodes
+
+ -- Sven Sager <s.sager@kunbus.com>  Thu, 01 Jun 2023 13:45:35 +0200
+
 noderedrevpinodes-server (1.0.5-1+revpi11+1) bullseye; urgency=medium
 
   [ Dennis Filsinger ]
