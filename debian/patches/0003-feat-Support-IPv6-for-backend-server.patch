@@ -1,0 +1,32 @@
+From: Nicolai Buchwitz <n.buchwitz@kunbus.com>
+Date: Thu, 1 Jun 2023 17:53:17 +0200
+Subject: feat: Support IPv6 for backend server
+
+It has been a while since IPv6 launch day 6.6.2012, so it the NodeRed backend
+should support IPv6 too. Nearly all systems default to IPv6 and also names like
+localhost are resolved to their IPv6 address by default. This means if a user
+enters localhost in NodeJS for the server config it will fail. Fix this by
+listen to IPv4 and IPv6.
+
+Signed-off-by: Nicolai Buchwitz <n.buchwitz@kunbus.com>
+(cherry picked from commit 889cd6347ddd12435e8c189a45bde531c6ebf82b)
+---
+ revpi-server.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/revpi-server.py b/revpi-server.py
+index 2467b76..a87c66c 100644
+--- a/revpi-server.py
++++ b/revpi-server.py
+@@ -199,9 +199,9 @@ class RevPiServer:
+         self.revpi.cycleloop(self.cyclefunc, cycletime=self.cycle_time_ms, blocking=False)
+ 
+     def start_websocket_loop(self):
+-        ip = '0.0.0.0'
++        ip = ['::', '0.0.0.0']
+         if self.block_external_connections:
+-            ip = '127.0.0.1'
++            ip = ['::1', '127.0.0.1']
+         if distro.codename() == 'stretch':
+             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+             localhost_pem = os.path.abspath(self.cert_file)
