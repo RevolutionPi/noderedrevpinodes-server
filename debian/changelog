@@ -1,3 +1,9 @@
+noderedrevpinodes-server (1.0.5-1+revpi11+3) bullseye; urgency=medium
+
+  * packaging(patch): Add support IPv6 for backend server
+
+ -- Sven Sager <s.sager@kunbus.com>  Sat, 03 Jun 2023 07:42:12 +0200
+
 noderedrevpinodes-server (1.0.5-1+revpi11+2) bullseye; urgency=medium
 
   * packaging: Add dependency to node-red-contrib-revpi-nodes
