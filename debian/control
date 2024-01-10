@@ -5,7 +5,7 @@ Maintainer: KUNBUS GmbH <support@kunbus.com>
 Rules-Requires-Root: no
 Homepage: https://github.com/erminas/noderedrevpinodes-server
 Vcs-Browser: https://gitlab.com/RevolutionPi/noderedrevpinodes-server
-Vcs-Git: https://gitlab.com/RevolutionPi/noderedrevpinodes-server.git -b raspios/bookworm
+Vcs-Git: https://gitlab.com/RevolutionPi/noderedrevpinodes-server.git -b debian/bookworm
 Build-Depends: debhelper-compat (= 13), dh-python, python3
 Standards-Version: 4.6.2
 
