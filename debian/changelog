@@ -1,3 +1,13 @@
+noderedrevpinodes-server (1.0.5-1+revpi12+2) bookworm; urgency=medium
+
+  [ Philipp Rosenberger ]
+  * Switch back to the debian/ namespace
+
+  [ Sven Sager ]
+  * feat(deb): Remove dependency to node-red-contrib-revpi-node
+
+ -- Sven Sager <s.sager@kunbus.com>  Tue, 14 May 2024 05:52:37 +0200
+
 noderedrevpinodes-server (1.0.5-1+revpi12+1) bookworm; urgency=medium
 
   * packaging: Update debian files for debian bookworm
