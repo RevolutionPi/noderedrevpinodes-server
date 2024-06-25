@@ -141,7 +141,7 @@ class RevPiServer:
 
         self.cycle_time_ms = 50
 
-        self.config_location = "/home/pi/.config/noderedrevpinodes-server/server_config.json"
+        self.config_location = "/etc/noderedrevpinodes-server/server_config.json"
         self.supported_config_versions = ["noderedrevpinodes-server_config_1.0.0",
                                           "noderedrevpinodes-server_config_1.0.1"]
 
