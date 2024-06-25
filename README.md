@@ -59,8 +59,8 @@ For secure communication server certificates are needed. It is strongly recommen
 1. Generate the certificates with the following steps:
 
         ```
-        mkdir /home/pi/revpinodered-certificates
-        cd /home/pi/revpinodered-certificates
+        mkdir /etc/noderedrevpinodes-server/revpinodered-certificates
+        cd /etc/noderedrevpinodes-server/revpinodered-certificates
         ```
 
     Option A: Generate your certificate with an root-certificate (CA)
@@ -115,8 +115,8 @@ For secure communication server certificates are needed. It is strongly recommen
 {
     "version": "noderedrevpinodes-server_config_1.0.1",
 	...
-    "private_key_file": "/home/pi/revpinodered-certificates/private_key.pem",
-    "cert_file": "/home/pi/revpinodered-certificates/certificate-pub.pem",
+    "private_key_file": "/etc/noderedrevpinodes-server/revpinodered-certificates/private_key.pem",
+    "cert_file": "/etc/noderedrevpinodes-server/revpinodered-certificates/certificate-pub.pem",
 	....
 }
 ```
