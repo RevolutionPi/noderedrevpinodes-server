@@ -18,6 +18,7 @@ __author__ = "erminas GmbH"
 __copyright__ = "Copyright (C) 2019 erminas GmbH"
 __license__ = "LGPL-3.0-only"
 __email__ = "info@erminas.de"
+from .__about__ import __version__
 
 import argparse
 import time
@@ -578,6 +579,7 @@ def remove_authorized_user(user):
 def main() -> int:
     parser = argparse.ArgumentParser(description='Revpi Node Server.')
 
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument('--adduser', help='add authorized user', nargs='?', default=False, const=True)
     parser.add_argument('--password', help='password for new user', nargs='?', default=False, const=True)
     parser.add_argument('--removeuser', help='remove authorized user', nargs='?', default=False, const=True)
