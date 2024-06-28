@@ -33,7 +33,7 @@ sudo systemctl restart noderedrevpinodes-server.service
 
 ### Configuration (optional)
 
-You can optionally create a configuration file to change settings under "~/.config/noderedrevpinodes-server/server_config.json" with following structure:
+You can optionally create a configuration file to change settings under "/etc/noderedrevpinodes-server/server_config.json" with following structure:
 
 ```
 {
