@@ -575,7 +575,7 @@ def remove_authorized_user(user):
         json.dump(authorized_user, f, ensure_ascii=False, indent=4)
 
 
-if __name__ == "__main__":
+def main() -> int:
     parser = argparse.ArgumentParser(description='Revpi Node Server.')
 
     parser.add_argument('--adduser', help='add authorized user', nargs='?', default=False, const=True)
@@ -587,28 +587,29 @@ if __name__ == "__main__":
     if args.removeuser:
         if len(args.removeuser) < 1 or len(args.removeuser) > 72:
             logging.error("Username has to be between 0 and 73 characters long!")
-            exit()
+            return 1
 
         remove_authorized_user(args.removeuser)
 
         logging.info("Authorized user deleted!")
-        exit()
+        return 0
 
     if args.adduser and args.password:
         if len(args.adduser) < 1 or len(args.adduser) > 72:
             logging.error("Username has to be between 0 and 73 characters long!")
-            exit()
+            return 1
 
         if len(args.password) < 1 or len(args.password) > 72:
             logging.error("Password has to be between 0 and 73 characters long!")
-            exit()
+            return 1
 
         add_authorized_user(args.adduser, args.password)
 
         logging.info("Authorized user added!")
-        exit()
+        return 0
 
     port = 8000
     block_external_connections = False
     revPiServer = RevPiServer(port, block_external_connections)
     revPiServer.start(args)
+    return 0
