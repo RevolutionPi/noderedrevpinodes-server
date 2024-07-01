@@ -1,10 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: noderedrevpinodes-server
-Upstream-Contact: erminas GmbH <info@erminas.de>
-Source: https://github.com/erminas/node-red-contrib-revpi-nodes
+Source: https://gitlab.com/RevolutionPi/noderedrevpinodes-server
 
 Files: *
-Copyright: 2019-2022 erminas GmbH <info@erminas.de>
+Copyright:
+ 2019-2023 erminas GmbH <info@erminas.de>
+ 2024 KUNBUS GmbH <support@kunbus.com>
 License: LGPL-3+
 
 Files: debian/*

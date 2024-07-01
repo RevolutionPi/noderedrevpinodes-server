@@ -1,2 +1,1 @@
-revpi-server.py /usr/share/noderedrevpinodes-server
-bin/noderedrevpinodes-server.service /lib/systemd/system
+data/systemd/noderedrevpinodes-server.service lib/systemd/system
