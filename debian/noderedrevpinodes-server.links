@@ -1,2 +1,2 @@
-usr/share/noderedrevpinodes-server/revpi-server.py	/usr/sbin/noderedrevpinodes-server
-var/log/revpi-server.log				/usr/share/noderedrevpinodes-server/revpi-server.log
+usr/share/noderedrevpinodes-server/noderedrevpinodes-server		/usr/bin/noderedrevpinodes-server
+var/log/revpi-server.log										/usr/share/noderedrevpinodes-server/revpi-server.log
