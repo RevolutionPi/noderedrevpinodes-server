@@ -5,7 +5,16 @@ Maintainer: KUNBUS GmbH <support@kunbus.com>
 Rules-Requires-Root: no
 Vcs-Browser: https://gitlab.com/RevolutionPi/noderedrevpinodes-server
 Vcs-Git: https://gitlab.com/RevolutionPi/noderedrevpinodes-server.git -b raspios/bullseye
-Build-Depends: debhelper-compat (= 13), dh-python, python3
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ python3-all,
+ python3-revpimodio2 (>= 2.5.1),
+ python3-bcrypt (>= 3.1.2),
+ python3-cryptography (>= 1.7.1),
+ python3-websockets(>= 3.2-2),
+ python3-distro(>= 1.0.0),
+ python3-setuptools,
 Standards-Version: 4.5.1
 
 Package: noderedrevpinodes-server
@@ -19,7 +28,7 @@ Depends:
   python3-bcrypt (>= 3.1.2),
   python3-cryptography (>= 1.7.1),
   python3-websockets(>= 3.2-2),
-  python3-distro(>= 1.0.0)
+  python3-distro(>= 1.0.0),
 Description: Server backend for the RevPi-NodeRed-Nodes
  The server is needed to communicate between the Node-RED RevPi nodes and
  the I/O pins on the RevPi. It is a Python based websocket server which
