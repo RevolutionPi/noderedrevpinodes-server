@@ -1,7 +1,7 @@
 [Unit]
 Description=Revolution Pi NodeRed Service
-After=multi-user.target
-Documentation="https://github.com/erminas/noderedrevpinodes-server"
+After=network.target
+Documentation=https://gitlab.com/revolutionpi/noderedrevpinodes-server
 
 MemoryAccounting=true
 MemoryHigh=200M
@@ -9,11 +9,9 @@ MemoryMax=400M
 
 [Service]
 Type=simple
-ExecStart=/bin/sh -c 'exec /usr/bin/python3 -u revpi-server.py 2>> /var/log/revpi-server.log'
+ExecStart=/usr/bin/sh -c 'exec /usr/bin/noderedrevpinodes-server 2>> /var/log/revpi-server.log'
 WorkingDirectory=/usr/share/noderedrevpinodes-server/
 Restart=on-abort
 
 [Install]
 WantedBy=multi-user.target
-
-
