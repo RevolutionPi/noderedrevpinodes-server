@@ -1,3 +1,32 @@
+noderedrevpinodes-server (1.1.0-1+revpi12+1) bookworm; urgency=medium
+
+  [ Dennis Filsinger ]
+  * Fix client version check
+  * change version in readme
+
+  [ Nicolai Buchwitz ]
+  * feat: Support IPv6 for backend server
+
+  [ Sven Sager ]
+  * feat: Set configuration file to global etc directory
+  * docs: Create certificates in etc directory
+  * docs: Fix README.md location of configuration file
+  * feat: Remove debian files from main branch
+  * feat: Add default python optimised gitignore file
+  * feat: Move files to src-layout
+  * feat: Create a main function with return codes
+  * feat: Add python base project files
+  * build: Add all necessary files for the build system
+  * fix(systemd): Update unit file to new entry point
+  * test: Test the import of the noderedrevpinodes_server module
+  * ci: Add GitLab CI tasks to test and build two flavors of the project
+  * feat: Add --version argument to program
+  * feat(deb): Remove all patches as long as they are now part of main Branch
+  * feat(deb): Change debian files to KUNBUS default layout
+  * feat(deb): Install python package as application
+
+ -- Sven Sager <s.sager@kunbus.com>  Tue, 02 Jul 2024 08:36:03 +0200
+
 noderedrevpinodes-server (1.0.5-1+revpi12+2) bookworm; urgency=medium
 
   [ Philipp Rosenberger ]
