@@ -1,0 +1,26 @@
+From: Sven Sager <s.sager@kunbus.com>
+Date: Tue, 2 Jul 2024 08:07:24 +0200
+Subject: patch: Change executable folder von bin to sbin
+
+In the old versions for Bullseye, the application was always stored in
+/usr/sbin. This behavior is maintained and the systemd unit file must
+be adjusted.
+
+Signed-off-by: Sven Sager <s.sager@kunbus.com>
+---
+ data/systemd/noderedrevpinodes-server.service | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/data/systemd/noderedrevpinodes-server.service b/data/systemd/noderedrevpinodes-server.service
+index fcc1f01..ef2b527 100644
+--- a/data/systemd/noderedrevpinodes-server.service
++++ b/data/systemd/noderedrevpinodes-server.service
+@@ -9,7 +9,7 @@ MemoryMax=400M
+ 
+ [Service]
+ Type=simple
+-ExecStart=/usr/bin/sh -c 'exec /usr/bin/noderedrevpinodes-server 2>> /var/log/revpi-server.log'
++ExecStart=/usr/bin/sh -c 'exec /usr/sbin/noderedrevpinodes-server 2>> /var/log/revpi-server.log'
+ WorkingDirectory=/usr/share/noderedrevpinodes-server/
+ Restart=on-abort
+ 
