@@ -15,12 +15,6 @@ The server requires [Raspbian Stretch ](https://revolution.kunbus.de/shop/de/str
 ```
 sudo apt-get install noderedrevpinodes-server
 ```
-Alternative (direct download from GitHub):
-```
-wget https://github.com/erminas/noderedrevpinodes-server/releases/download/1.0.5/noderedrevpinodes-server_1.0.5_all.deb
-sudo apt install ./noderedrevpinodes-server_1.0.5_all.deb
-```
-Please change the version "1.0.5" and the filename "noderedrevpinodes-server_1.0.5_all.deb" to the respective [release](https://github.com/erminas/noderedrevpinodes-server/releases) you want to install.
 
 2. The server is automatically started and runs in the background as daemon.
 
@@ -33,7 +27,7 @@ sudo systemctl restart noderedrevpinodes-server.service
 
 ### Configuration (optional)
 
-You can optionally create a configuration file to change settings under "~/.config/noderedrevpinodes-server/server_config.json" with following structure:
+You can optionally create a configuration file to change settings under "/etc/noderedrevpinodes-server/server_config.json" with following structure:
 
 ```
 {
@@ -59,8 +53,8 @@ For secure communication server certificates are needed. It is strongly recommen
 1. Generate the certificates with the following steps:
 
         ```
-        mkdir /home/pi/revpinodered-certificates
-        cd /home/pi/revpinodered-certificates
+        mkdir /etc/noderedrevpinodes-server/revpinodered-certificates
+        cd /etc/noderedrevpinodes-server/revpinodered-certificates
         ```
 
     Option A: Generate your certificate with an root-certificate (CA)
@@ -115,8 +109,8 @@ For secure communication server certificates are needed. It is strongly recommen
 {
     "version": "noderedrevpinodes-server_config_1.0.1",
 	...
-    "private_key_file": "/home/pi/revpinodered-certificates/private_key.pem",
-    "cert_file": "/home/pi/revpinodered-certificates/certificate-pub.pem",
+    "private_key_file": "/etc/noderedrevpinodes-server/revpinodered-certificates/private_key.pem",
+    "cert_file": "/etc/noderedrevpinodes-server/revpinodered-certificates/certificate-pub.pem",
 	....
 }
 ```

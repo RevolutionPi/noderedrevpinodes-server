@@ -1,0 +1,9 @@
+recursive-include data *
+include LICENSE.txt
+include Makefile
+include MANIFEST.in
+include pyproject.toml
+include README.md
+include requirements.txt
+include setup.py
+recursive-include tests *

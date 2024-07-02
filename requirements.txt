@@ -1,0 +1,13 @@
+# Build dependencies
+pip-licenses
+Pyinstaller
+pytest-cov
+setuptools
+wheel
+
+# Runtime dependencies, must match install_requires in setup.py
+bcrypt
+cryptography
+distro
+revpimodio2
+websockets

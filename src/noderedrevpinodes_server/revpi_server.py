@@ -18,6 +18,7 @@ __author__ = "erminas GmbH"
 __copyright__ = "Copyright (C) 2019 erminas GmbH"
 __license__ = "LGPL-3.0-only"
 __email__ = "info@erminas.de"
+from .__about__ import __version__
 
 import argparse
 import time
@@ -141,7 +142,7 @@ class RevPiServer:
 
         self.cycle_time_ms = 50
 
-        self.config_location = "/home/pi/.config/noderedrevpinodes-server/server_config.json"
+        self.config_location = "/etc/noderedrevpinodes-server/server_config.json"
         self.supported_config_versions = ["noderedrevpinodes-server_config_1.0.0",
                                           "noderedrevpinodes-server_config_1.0.1"]
 
@@ -199,9 +200,9 @@ class RevPiServer:
         self.revpi.cycleloop(self.cyclefunc, cycletime=self.cycle_time_ms, blocking=False)
 
     def start_websocket_loop(self):
-        ip = '0.0.0.0'
+        ip = ['::', '0.0.0.0']
         if self.block_external_connections:
-            ip = '127.0.0.1'
+            ip = ['::1', '127.0.0.1']
         if distro.codename() == 'stretch':
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
             localhost_pem = os.path.abspath(self.cert_file)
@@ -327,7 +328,7 @@ class RevPiServer:
 
                 if command == "login":
                     client_version = str(args[0])
-                    if client_version in self.supported_client_versions:
+                    if not client_version in self.supported_client_versions:
                         logging.info("Unsupported client version")
                         return_message = {"error": "ERROR_UNSUPPORTED_VERSION"}
                         self.send_websocket_message(client, message + ";" + json.dumps(return_message))
@@ -575,9 +576,10 @@ def remove_authorized_user(user):
         json.dump(authorized_user, f, ensure_ascii=False, indent=4)
 
 
-if __name__ == "__main__":
+def main() -> int:
     parser = argparse.ArgumentParser(description='Revpi Node Server.')
 
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument('--adduser', help='add authorized user', nargs='?', default=False, const=True)
     parser.add_argument('--password', help='password for new user', nargs='?', default=False, const=True)
     parser.add_argument('--removeuser', help='remove authorized user', nargs='?', default=False, const=True)
@@ -587,28 +589,29 @@ if __name__ == "__main__":
     if args.removeuser:
         if len(args.removeuser) < 1 or len(args.removeuser) > 72:
             logging.error("Username has to be between 0 and 73 characters long!")
-            exit()
+            return 1
 
         remove_authorized_user(args.removeuser)
 
         logging.info("Authorized user deleted!")
-        exit()
+        return 0
 
     if args.adduser and args.password:
         if len(args.adduser) < 1 or len(args.adduser) > 72:
             logging.error("Username has to be between 0 and 73 characters long!")
-            exit()
+            return 1
 
         if len(args.password) < 1 or len(args.password) > 72:
             logging.error("Password has to be between 0 and 73 characters long!")
-            exit()
+            return 1
 
         add_authorized_user(args.adduser, args.password)
 
         logging.info("Authorized user added!")
-        exit()
+        return 0
 
     port = 8000
     block_external_connections = False
     revPiServer = RevPiServer(port, block_external_connections)
     revPiServer.start(args)
+    return 0
