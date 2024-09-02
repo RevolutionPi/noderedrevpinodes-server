@@ -1,3 +1,10 @@
+noderedrevpinodes-server (1.1.1-1+deb12+1) bookworm; urgency=medium
+
+  * fix(systemd): Remove ignored memory options
+  * fix(systemd): Let the daemon restart on-failure
+
+ -- Sven Sager <s.sager@kunbus.com>  Mon, 02 Sep 2024 11:27:14 +0200
+
 noderedrevpinodes-server (1.1.0-1+revpi12+1) bookworm; urgency=medium
 
   [ Dennis Filsinger ]
