@@ -378,19 +378,17 @@ class RevPiServer:
                             valid_inputs = False
 
                         if valid_inputs and (io_name in self.revpi.io):
-                            if isinstance(self.revpi.io[io_name].value, bool):
-                                try:
-                                    val = bool(int(raw_val))
-                                except ValueError:
-                                    val = False
-                            elif isinstance(self.revpi.io[io_name].value, int):
-                                try:
-                                    val = int(raw_val)
-                                except ValueError:
-                                    val = 0
-                            else:
-                                val = raw_val
                             try:
+                                if isinstance(self.revpi.io[io_name].value, bool):
+                                    val = bool(int(raw_val))
+                                elif isinstance(self.revpi.io[io_name].value, int):
+                                    val = int(raw_val)
+
+                                    # Check whether the integer fits into the bytes of the output.
+                                    val.to_bytes(self.revpi.io[io_name].length, "little")
+                                else:
+                                    val = raw_val
+
                                 with self.buffered_writes_lock:
                                     if io_name not in self.buffered_writes.keys():
                                         self.buffered_writes[io_name] = queue.Queue()
@@ -398,12 +396,16 @@ class RevPiServer:
                                 return_message = {}
                                 self.send_websocket_message(client, message + ";" + json.dumps(return_message))
                             except OverflowError:
-                                logging.warning("Error setting " + io_name + " to " + str(val) + ", overflow!")
-                                return_message = {"error": "ERROR_UNKNOWN"}
+                                logging.warning("Error setting " + io_name + " to " + str(raw_val) + ", overflow!")
+                                return_message = {"error": "ERROR_PIN", "name": "Value overflow error"}
+                                self.send_websocket_message(client, message + ";" + json.dumps(return_message))
+                            except ValueError as e:
+                                logging.warning(f"Can not convert value {raw_val}: {str(e)}")
+                                return_message = {"error": "ERROR_PIN", "name": "Value convert error"}
                                 self.send_websocket_message(client, message + ";" + json.dumps(return_message))
                             except Exception as e:
                                 logging.error("Exception " + str(e))
-                                return_message = {"error": "ERROR_UNKNOWN"}
+                                return_message = {"error": "ERROR_PIN", "name": str(e)}
                                 self.send_websocket_message(client, message + ";" + json.dumps(return_message))
                         else:
                             return_message = {"name": io_name, "value": raw_val, "error": "ERROR_PIN"}
