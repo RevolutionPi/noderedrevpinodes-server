@@ -379,15 +379,16 @@ class RevPiServer:
 
                         if valid_inputs and (io_name in self.revpi.io):
                             try:
-                                if isinstance(self.revpi.io[io_name].value, bool):
+                                value_type = type(self.revpi.io[io_name].value)
+                                if value_type is bool:
                                     val = bool(int(raw_val))
-                                elif isinstance(self.revpi.io[io_name].value, int):
+                                elif value_type is int:
                                     val = int(raw_val)
 
                                     # Check whether the integer fits into the bytes of the output.
                                     val.to_bytes(self.revpi.io[io_name].length, "little")
                                 else:
-                                    val = raw_val
+                                    raise ValueError(f"Unsupported data type: {value_type}")
 
                                 with self.buffered_writes_lock:
                                     if io_name not in self.buffered_writes.keys():
@@ -401,7 +402,7 @@ class RevPiServer:
                                 self.send_websocket_message(client, message + ";" + json.dumps(return_message))
                             except ValueError as e:
                                 logging.warning(f"Can not convert value {raw_val}: {str(e)}")
-                                return_message = {"error": "ERROR_PIN", "name": "Value convert error"}
+                                return_message = {"error": "ERROR_PIN", "name": f"Value error: {str(e)}"}
                                 self.send_websocket_message(client, message + ";" + json.dumps(return_message))
                             except Exception as e:
                                 logging.error("Exception " + str(e))
