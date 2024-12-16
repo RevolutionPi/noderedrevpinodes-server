@@ -252,12 +252,16 @@ class RevPiServer:
     def cyclefunc(self, ct):
         with self.buffered_writes_lock:
             for io_name, value_queue in self.buffered_writes.items():
+                if io_name not in ct.io:
+                    continue
                 if not value_queue.empty():
                     val = value_queue.get_nowait()
                     ct.io[io_name].value = val
 
         for client in self.connected_clients:
             for input in client.monitored_inputs:
+                if input.name not in ct.io:
+                    continue
                 new_val = ct.io[input.name].value
                 if new_val != input.old_value:
                     message = {"name": str(input.name), "value": self.convert_value(new_val)}
