@@ -39,6 +39,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 
 from .__about__ import __version__
+from .reset_driver import ResetDriverWatchdog
 
 # set global logger
 root = logging.getLogger()
@@ -124,6 +125,7 @@ class RevPiServer:
         self.port = port
         self.block_external_connections = block_external_connections
 
+        self.config_rsc_hash = ""
         self.revpi = None
         self.io_list = None
         self.running = True
@@ -175,6 +177,20 @@ class RevPiServer:
 
         threading.Thread(target=self.watchdog_revpimodio).start()
 
+    def get_config_rsc_hash(self) -> str:
+        """Get MD5 sum of config.rsc or an empty string."""
+        if not self.revpi:
+            return ""
+
+        if not os.path.isfile(self.revpi.configrsc):
+            return ""
+
+        hash_md5 = hashlib.md5()
+        with open(self.revpi.configrsc, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+
     def initialize_revpimodio(self):
         if self.revpi:  # clean if already existent
             self.revpi.cleanup()
@@ -191,6 +207,7 @@ class RevPiServer:
         # init RevPiModIO with auto refresh
         # shared_procimg set to true ist not recommended (slow speed)
         self.revpi = revpimodio2.RevPiModIO(autorefresh=True, shared_procimg=True)
+        self.config_rsc_hash = self.get_config_rsc_hash()
 
     def start_revpi_modio(self):
         self.revpi.cycleloop(self.cyclefunc, cycletime=self.cycle_time_ms, blocking=False)
@@ -219,13 +236,18 @@ class RevPiServer:
         self.event_loop.run_forever()
 
     def watchdog_revpimodio(self):
+        reset_driver = ResetDriverWatchdog()
+
         while self.running:
-            if self.revpi.ioerrors:
+            if reset_driver.triggered and self.config_rsc_hash != (test_hash := self.get_config_rsc_hash()):
+                self.config_rsc_hash = test_hash
                 logging.warning("Restarting revpimodio")
                 self.initialize_revpimodio()
                 self.get_io_list(True)
                 self.start_revpi_modio()
             time.sleep(1)
+
+        reset_driver.stop()
 
     def cyclefunc(self, ct):
         with self.buffered_writes_lock:
