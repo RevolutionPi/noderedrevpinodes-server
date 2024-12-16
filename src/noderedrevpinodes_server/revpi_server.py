@@ -5,44 +5,40 @@
    The server is needed to communicate between the nodes and the pins on the RevPi.
    It is a python based websocket server which uses the python library RevPiModIO.
 """
-import os
-import gc
-import pathlib
-import distro
-import traceback
-import uuid
-import concurrent
-import contextlib
-
 __author__ = "erminas GmbH"
 __copyright__ = "Copyright (C) 2019 erminas GmbH"
 __license__ = "LGPL-3.0-only"
 __email__ = "info@erminas.de"
-from .__about__ import __version__
 
 import argparse
-import time
-import threading
-import logging
-from logging.handlers import RotatingFileHandler
+import asyncio
+import hashlib
 import json
-import signal
-import sys
-import bcrypt
-import ssl
+import logging
+import os
 import queue
+import signal
+import ssl
+import sys
+import threading
+import time
+import traceback
+import uuid
+from datetime import datetime, timedelta
+from logging.handlers import RotatingFileHandler
+
+import bcrypt
+import distro
+import revpimodio2
+import websockets
 from cryptography import x509
-from cryptography.x509.oid import NameOID
-from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from datetime import datetime, timedelta
+from cryptography.x509.oid import NameOID
 
-import revpimodio2
-
-import asyncio
-import websockets
+from .__about__ import __version__
 
 # set global logger
 root = logging.getLogger()
