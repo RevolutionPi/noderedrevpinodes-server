@@ -171,8 +171,6 @@ class RevPiServer:
             self.event_loop = asyncio.get_event_loop()
 
         ignore_aiohttp_ssl_eror(self.event_loop)
-        self.event_loop_thread = None
-
         self.event_loop_thread = threading.Thread(target=self.start_websocket_loop)
 
         threading.Thread(target=self.watchdog_revpimodio).start()
@@ -218,17 +216,11 @@ class RevPiServer:
             ip = ['::1', '127.0.0.1']
         if distro.codename() == 'stretch':
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-            localhost_pem = os.path.abspath(self.cert_file)
-
             ssl_context.load_cert_chain(self.cert_file, self.private_key_file)
-
             start_server = websockets.serve(self.handle_clients, ip, self.port, loop=self.event_loop, ssl=ssl_context)
         else:
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-            localhost_pem = os.path.abspath(self.cert_file)
-
             ssl_context.load_cert_chain(self.cert_file, self.private_key_file)
-
             start_server = websockets.serve(self.handle_clients, ip, self.port, loop=self.event_loop, ssl=ssl_context,
                                             ping_timeout=None, compression=None)
 
