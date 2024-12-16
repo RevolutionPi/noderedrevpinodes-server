@@ -362,6 +362,8 @@ class RevPiServer:
                                 self.connected_clients.add(client)
 
                             for io_name in io_names:
+                                if io_name not in self.revpi.io:
+                                    continue
                                 client.monitored_inputs.add(MonitoredInput(self.revpi.io[io_name]))
 
                             return_message = {}
