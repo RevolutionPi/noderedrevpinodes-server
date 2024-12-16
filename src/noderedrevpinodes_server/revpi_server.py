@@ -254,7 +254,7 @@ class RevPiServer:
             for io_name, value_queue in self.buffered_writes.items():
                 if io_name not in ct.io:
                     continue
-                if not value_queue.empty():
+                while not value_queue.empty():
                     val = value_queue.get_nowait()
                     ct.io[io_name].value = val
 
