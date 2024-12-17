@@ -25,6 +25,7 @@ import time
 import traceback
 import uuid
 from datetime import datetime, timedelta
+from logging import StreamHandler
 from logging.handlers import RotatingFileHandler
 
 import bcrypt
@@ -46,9 +47,14 @@ root = logging.getLogger()
 if root.handlers:
     for handler in root.handlers:
         root.removeHandler(handler)
-logging.basicConfig(handlers=[RotatingFileHandler('/var/log/revpi-server.log', maxBytes=100000000, backupCount=5)],
-                    level=logging.INFO,
-                    format='%(asctime)s %(name)-12s: %(levelname)-8s %(message)s')
+logging.basicConfig(
+    handlers=[
+        StreamHandler(sys.stdout),
+        RotatingFileHandler('/var/log/revpi-server.log', maxBytes=100000000, backupCount=5),
+    ],
+    level=logging.INFO,
+    format='%(asctime)s %(name)-12s: %(levelname)-8s %(message)s',
+)
 
 SSL_PROTOCOLS = (asyncio.sslproto.SSLProtocol,)
 
