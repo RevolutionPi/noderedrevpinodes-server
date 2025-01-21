@@ -1,0 +1,9 @@
+noderedrevpinodes-server (1.2.0-1+deb12+1) bookworm; urgency=medium
+
+  This update brings stability improvements and prevents an internal crash
+  of the IO update. Previously, this behavior might have allowed the process
+  to continue while making the IOs unresponsive or inaccessible.
+  
+  The log outputs are now also displayed in journald and in cockpit.
+
+ -- Sven Sager <s.sager@kunbus.com>  Tue, 21 Jan 2025 10:19:17 +0100

@@ -1,3 +1,17 @@
+noderedrevpinodes-server (1.2.0-1+deb12+1) bookworm; urgency=medium
+
+  * style: Cleanup and reorder imports
+  * feat: Reload RevPiModIO after driver reset and config change
+  * fix: Check existence of IO in cylcefunc
+  * fix: The queues must be completely emptied in one cycle
+  * style: Remove unused variables
+  * fix: Ignore non-existent IO names of single-input nodes
+  * feat: Add logging to stdout
+  * chore: Set version to 1.2.0
+  * fix(deb): Ignore ci commits in changelog file
+
+ -- Sven Sager <s.sager@kunbus.com>  Tue, 21 Jan 2025 10:18:57 +0100
+
 noderedrevpinodes-server (1.1.2-1+deb12+1) bookworm; urgency=medium
 
   * fix: Check byte length of given integer to fit to output
