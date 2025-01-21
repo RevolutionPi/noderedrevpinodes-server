@@ -5,53 +5,56 @@
    The server is needed to communicate between the nodes and the pins on the RevPi.
    It is a python based websocket server which uses the python library RevPiModIO.
 """
-import os
-import gc
-import pathlib
-import distro
-import traceback
-import uuid
-import concurrent
-import contextlib
-
 __author__ = "erminas GmbH"
 __copyright__ = "Copyright (C) 2019 erminas GmbH"
 __license__ = "LGPL-3.0-only"
 __email__ = "info@erminas.de"
-from .__about__ import __version__
 
 import argparse
-import time
-import threading
-import logging
-from logging.handlers import RotatingFileHandler
+import asyncio
+import hashlib
 import json
-import signal
-import sys
-import bcrypt
-import ssl
+import logging
+import os
 import queue
+import signal
+import ssl
+import sys
+import threading
+import time
+import traceback
+import uuid
+from datetime import datetime, timedelta
+from logging import StreamHandler
+from logging.handlers import RotatingFileHandler
+
+import bcrypt
+import distro
+import revpimodio2
+import websockets
 from cryptography import x509
-from cryptography.x509.oid import NameOID
-from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from datetime import datetime, timedelta
+from cryptography.x509.oid import NameOID
 
-import revpimodio2
-
-import asyncio
-import websockets
+from .__about__ import __version__
+from .reset_driver import ResetDriverWatchdog
 
 # set global logger
 root = logging.getLogger()
 if root.handlers:
     for handler in root.handlers:
         root.removeHandler(handler)
-logging.basicConfig(handlers=[RotatingFileHandler('/var/log/revpi-server.log', maxBytes=100000000, backupCount=5)],
-                    level=logging.INFO,
-                    format='%(asctime)s %(name)-12s: %(levelname)-8s %(message)s')
+logging.basicConfig(
+    handlers=[
+        StreamHandler(sys.stdout),
+        RotatingFileHandler('/var/log/revpi-server.log', maxBytes=100000000, backupCount=5),
+    ],
+    level=logging.INFO,
+    format='%(asctime)s %(name)-12s: %(levelname)-8s %(message)s',
+)
 
 SSL_PROTOCOLS = (asyncio.sslproto.SSLProtocol,)
 
@@ -128,6 +131,7 @@ class RevPiServer:
         self.port = port
         self.block_external_connections = block_external_connections
 
+        self.config_rsc_hash = ""
         self.revpi = None
         self.io_list = None
         self.running = True
@@ -173,11 +177,23 @@ class RevPiServer:
             self.event_loop = asyncio.get_event_loop()
 
         ignore_aiohttp_ssl_eror(self.event_loop)
-        self.event_loop_thread = None
-
         self.event_loop_thread = threading.Thread(target=self.start_websocket_loop)
 
         threading.Thread(target=self.watchdog_revpimodio).start()
+
+    def get_config_rsc_hash(self) -> str:
+        """Get MD5 sum of config.rsc or an empty string."""
+        if not self.revpi:
+            return ""
+
+        if not os.path.isfile(self.revpi.configrsc):
+            return ""
+
+        hash_md5 = hashlib.md5()
+        with open(self.revpi.configrsc, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
 
     def initialize_revpimodio(self):
         if self.revpi:  # clean if already existent
@@ -195,6 +211,7 @@ class RevPiServer:
         # init RevPiModIO with auto refresh
         # shared_procimg set to true ist not recommended (slow speed)
         self.revpi = revpimodio2.RevPiModIO(autorefresh=True, shared_procimg=True)
+        self.config_rsc_hash = self.get_config_rsc_hash()
 
     def start_revpi_modio(self):
         self.revpi.cycleloop(self.cyclefunc, cycletime=self.cycle_time_ms, blocking=False)
@@ -205,17 +222,11 @@ class RevPiServer:
             ip = ['::1', '127.0.0.1']
         if distro.codename() == 'stretch':
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-            localhost_pem = os.path.abspath(self.cert_file)
-
             ssl_context.load_cert_chain(self.cert_file, self.private_key_file)
-
             start_server = websockets.serve(self.handle_clients, ip, self.port, loop=self.event_loop, ssl=ssl_context)
         else:
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-            localhost_pem = os.path.abspath(self.cert_file)
-
             ssl_context.load_cert_chain(self.cert_file, self.private_key_file)
-
             start_server = websockets.serve(self.handle_clients, ip, self.port, loop=self.event_loop, ssl=ssl_context,
                                             ping_timeout=None, compression=None)
 
@@ -223,23 +234,32 @@ class RevPiServer:
         self.event_loop.run_forever()
 
     def watchdog_revpimodio(self):
+        reset_driver = ResetDriverWatchdog()
+
         while self.running:
-            if self.revpi.ioerrors:
+            if reset_driver.triggered and self.config_rsc_hash != (test_hash := self.get_config_rsc_hash()):
+                self.config_rsc_hash = test_hash
                 logging.warning("Restarting revpimodio")
                 self.initialize_revpimodio()
                 self.get_io_list(True)
                 self.start_revpi_modio()
             time.sleep(1)
 
+        reset_driver.stop()
+
     def cyclefunc(self, ct):
         with self.buffered_writes_lock:
             for io_name, value_queue in self.buffered_writes.items():
-                if not value_queue.empty():
+                if io_name not in ct.io:
+                    continue
+                while not value_queue.empty():
                     val = value_queue.get_nowait()
                     ct.io[io_name].value = val
 
         for client in self.connected_clients:
             for input in client.monitored_inputs:
+                if input.name not in ct.io:
+                    continue
                 new_val = ct.io[input.name].value
                 if new_val != input.old_value:
                     message = {"name": str(input.name), "value": self.convert_value(new_val)}
@@ -348,6 +368,8 @@ class RevPiServer:
                                 self.connected_clients.add(client)
 
                             for io_name in io_names:
+                                if io_name not in self.revpi.io:
+                                    continue
                                 client.monitored_inputs.add(MonitoredInput(self.revpi.io[io_name]))
 
                             return_message = {}
