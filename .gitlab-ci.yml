@@ -1,6 +1,14 @@
-stages:
-  - test
-  - build
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# SPDX-FileCopyrightText: 2024-2025 KUNBUS GmbH
+
+include:
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "base.yml"
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "package-devel.yml"
+  - project: "revolutionpi/infrastructure/ci-templates"
+    file: "/check-commit/lint-commit.yml"
 
 run_tests:
   stage: test
