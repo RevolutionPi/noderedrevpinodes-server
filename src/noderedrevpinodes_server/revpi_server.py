@@ -50,7 +50,11 @@ if root.handlers:
 logging.basicConfig(
     handlers=[
         StreamHandler(sys.stdout),
-        RotatingFileHandler('/var/log/revpi-server.log', maxBytes=100000000, backupCount=5),
+        RotatingFileHandler(
+            '/var/log/revpi-server.log',
+            maxBytes=10000000,
+            backupCount=5,
+        ),
     ],
     level=logging.INFO,
     format='%(asctime)s %(name)-12s: %(levelname)-8s %(message)s',
