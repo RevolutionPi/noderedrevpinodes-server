@@ -201,17 +201,27 @@ class RevPiServer:
             self.revpi = None
 
         if not os.path.isfile("/etc/revpi/config.rsc") and not os.path.isfile("/opt/KUNBUS/config.rsc"):
-            logging.error("No hardware configuration found. Please configure hardware in PiCtory!")
+            logging.error("No hardware configuration found. Retrying every 60 seconds.")
 
             while not os.path.isfile("/etc/revpi/config.rsc") and not os.path.isfile("/opt/KUNBUS/config.rsc"):
                 time.sleep(60)
 
             logging.info("New hardware configuration found. Continuing..")
 
-        # init RevPiModIO with auto refresh
-        # shared_procimg set to true ist not recommended (slow speed)
-        self.revpi = revpimodio2.RevPiModIO(autorefresh=True, shared_procimg=True)
-        self.config_rsc_hash = self.get_config_rsc_hash()
+        mrk_log_error_message = True
+        while not self.revpi:
+            try:
+                # init RevPiModIO with auto refresh
+                # shared_procimg set to true ist not recommended (slow speed)
+                self.revpi = revpimodio2.RevPiModIO(autorefresh=True, shared_procimg=True)
+            except Exception as e:
+                if mrk_log_error_message:
+                    mrk_log_error_message = False
+                    logging.error(f"Could not instantiate RevPiModIO: {e}. Retrying every 60 seconds.")
+                time.sleep(60)
+            else:
+                self.config_rsc_hash = self.get_config_rsc_hash()
+                logging.info("Applied hardware configuration. Continuing..")
 
     def start_revpi_modio(self):
         self.revpi.cycleloop(self.cyclefunc, cycletime=self.cycle_time_ms, blocking=False)
