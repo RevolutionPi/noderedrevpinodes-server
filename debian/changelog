@@ -1,3 +1,10 @@
+noderedrevpinodes-server (1.2.1-1+deb12+1) bookworm; urgency=medium
+
+  * fix: Handle RevPiModIO initialization failures with retry loop.
+  * fix: Reduce log file size limit in RotatingFileHandler
+
+ -- Sven Sager <s.sager@kunbus.com>  Wed, 09 Apr 2025 13:18:10 +0200
+
 noderedrevpinodes-server (1.2.0-1+deb12+1) bookworm; urgency=medium
 
   * style: Cleanup and reorder imports
