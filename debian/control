@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: KUNBUS GmbH <support@kunbus.com>
 Rules-Requires-Root: no
 Vcs-Browser: https://gitlab.com/RevolutionPi/noderedrevpinodes-server
-Vcs-Git: https://gitlab.com/RevolutionPi/noderedrevpinodes-server.git -b debian/bookworm
+Vcs-Git: https://gitlab.com/RevolutionPi/noderedrevpinodes-server.git -b debian/trixie
 Build-Depends:
  debhelper-compat (= 13),
  dh-python,
@@ -15,7 +15,7 @@ Build-Depends:
  python3-websockets(>= 3.2-2),
  python3-distro(>= 1.0.0),
  python3-setuptools,
-Standards-Version: 4.6.2
+Standards-Version: 4.7.2
 
 Package: noderedrevpinodes-server
 Architecture: all

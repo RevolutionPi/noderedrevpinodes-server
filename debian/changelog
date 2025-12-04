@@ -1,3 +1,9 @@
+noderedrevpinodes-server (1.2.1-1+deb13+1) trixie; urgency=medium
+
+  * Initial release for trixie
+
+ -- Marc Kittner <m.kittner@kunbus.com>  Thu, 04 Dec 2025 14:53:50 +0100
+
 noderedrevpinodes-server (1.2.1-1+deb12+1) bookworm; urgency=medium
 
   * fix: Handle RevPiModIO initialization failures with retry loop.
