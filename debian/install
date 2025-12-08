@@ -1,1 +1,1 @@
-data/systemd/noderedrevpinodes-server.service lib/systemd/system
+data/systemd/noderedrevpinodes-server.service usr/lib/systemd/system
