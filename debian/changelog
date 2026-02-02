@@ -1,3 +1,10 @@
+noderedrevpinodes-server (1.3.0-1+deb13+1) trixie; urgency=medium
+
+  * feat: Use main thread for asycnio
+  * fix: Ensure client tasks are canceled only if event loop is active
+
+ -- Sven Sager <s.sager@kunbus.com>  Mon, 02 Feb 2026 12:22:07 +0100
+
 noderedrevpinodes-server (1.2.1-1+deb13+1) trixie; urgency=medium
 
   * Initial release for trixie
