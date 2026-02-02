@@ -24,5 +24,6 @@ if __name__ == "__main__":
         sys.exit(main())
 
     except Exception as e:
+        raise e
         sys.stderr.write(f"Can not start __main__ module: {e}\n")
         sys.exit(1)

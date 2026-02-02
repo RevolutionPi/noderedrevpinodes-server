@@ -181,7 +181,6 @@ class RevPiServer:
             self.event_loop = asyncio.get_event_loop()
 
         ignore_aiohttp_ssl_eror(self.event_loop)
-        self.event_loop_thread = threading.Thread(target=self.start_websocket_loop)
 
         threading.Thread(target=self.watchdog_revpimodio).start()
 
@@ -230,22 +229,19 @@ class RevPiServer:
     def start_revpi_modio(self):
         self.revpi.cycleloop(self.cyclefunc, cycletime=self.cycle_time_ms, blocking=False)
 
-    def start_websocket_loop(self):
+    async def start_websocket_loop(self):
         ip = ['::', '0.0.0.0']
         if self.block_external_connections:
             ip = ['::1', '127.0.0.1']
         if distro.codename() == 'stretch':
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
             ssl_context.load_cert_chain(self.cert_file, self.private_key_file)
-            start_server = websockets.serve(self.handle_clients, ip, self.port, loop=self.event_loop, ssl=ssl_context)
+            await websockets.serve(self.handle_clients, ip, self.port, ssl=ssl_context)
         else:
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             ssl_context.load_cert_chain(self.cert_file, self.private_key_file)
-            start_server = websockets.serve(self.handle_clients, ip, self.port, loop=self.event_loop, ssl=ssl_context,
-                                            ping_timeout=None, compression=None)
-
-        self.event_loop.run_until_complete(start_server)
-        self.event_loop.run_forever()
+            await websockets.serve(self.handle_clients, ip, self.port, ssl=ssl_context,
+                                   ping_timeout=None, compression=None)
 
     def watchdog_revpimodio(self):
         reset_driver = ResetDriverWatchdog()
@@ -469,7 +465,7 @@ class RevPiServer:
             logging.error("Canceled while getting requests: " + str(e))
             raise e
 
-    async def handle_clients(self, websocket, path):
+    async def handle_clients(self, websocket, path=None):
         if self.block_external_connections and \
                 websocket.remote_address[0] != "localhost" and websocket.remote_address[0] != "127.0.0.1":
             logging.warning("Closing external connection of client with address " + str(websocket.remote_address[0]))
@@ -492,12 +488,14 @@ class RevPiServer:
             if client in self.connected_clients:
                 self.connected_clients.remove(client)
 
-            for t in tasks:
-                t.cancel()
-                try:
-                    await t
-                except asyncio.CancelledError:
-                    pass
+            # Cancel all tasks related to this client if the event loop is still running.
+            if not self.event_loop.is_closed():
+                for t in tasks:
+                    t.cancel()
+                    try:
+                        await t
+                    except asyncio.CancelledError:
+                        pass
 
             logging.info("Client( " + str(client.id) + " ) disconnected")
             client.monitored_inputs.clear()
@@ -513,7 +511,6 @@ class RevPiServer:
 
     def clean_on_exit(self, signum, frame):
         self.close()
-        sys.exit()
 
     def generate_self_signed_certificate(self):
         key = rsa.generate_private_key(
@@ -587,11 +584,17 @@ class RevPiServer:
         # Start revpi pin listener thread
         logging.info("Starting Revpi monitor thread")
 
+        # Start the ModIO as a thread
         self.start_revpi_modio()
 
-        # Start websocket server thread
+        # Start the websocket server with asyncio loop as the main thread
         logging.info("Starting websocket server thread")
-        self.event_loop_thread.start()
+
+        self.event_loop = asyncio.new_event_loop()
+        self.event_loop.run_until_complete(self.start_websocket_loop())
+        self.event_loop.run_forever()
+
+        logging.info("Shut down websocket server thread")
 
 
 def add_authorized_user(user, password):
