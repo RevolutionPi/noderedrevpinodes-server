@@ -488,12 +488,14 @@ class RevPiServer:
             if client in self.connected_clients:
                 self.connected_clients.remove(client)
 
-            for t in tasks:
-                t.cancel()
-                try:
-                    await t
-                except asyncio.CancelledError:
-                    pass
+            # Cancel all tasks related to this client if the event loop is still running.
+            if not self.event_loop.is_closed():
+                for t in tasks:
+                    t.cancel()
+                    try:
+                        await t
+                    except asyncio.CancelledError:
+                        pass
 
             logging.info("Client( " + str(client.id) + " ) disconnected")
             client.monitored_inputs.clear()
