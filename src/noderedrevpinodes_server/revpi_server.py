@@ -19,6 +19,7 @@ import os
 import queue
 import signal
 import ssl
+import stat
 import sys
 import threading
 import time
@@ -528,6 +529,8 @@ class RevPiServer:
                 format=serialization.PrivateFormat.TraditionalOpenSSL,
                 encryption_algorithm=serialization.NoEncryption(),
             ))
+            if stat.S_IMODE(os.stat(self.private_key_file).st_mode) != 0o600:
+                os.chmod(self.private_key_file, 0o600)
             os.umask(old_umask)
 
         subject = issuer = x509.Name([
