@@ -19,6 +19,7 @@ import os
 import queue
 import signal
 import ssl
+import stat
 import sys
 import threading
 import time
@@ -520,12 +521,18 @@ class RevPiServer:
         )
         self.private_key_file = "self_signed_key.pem"
 
+        # Create key file with permission for owner and group only
+        old_umask = os.umask(0o177)
         with open(self.private_key_file, "wb") as f:
             f.write(key.private_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PrivateFormat.TraditionalOpenSSL,
                 encryption_algorithm=serialization.NoEncryption(),
             ))
+            if stat.S_IMODE(os.stat(self.private_key_file).st_mode) != 0o600:
+                os.chmod(self.private_key_file, 0o600)
+            os.umask(old_umask)
+
         subject = issuer = x509.Name([
             x509.NameAttribute(NameOID.ORGANIZATION_NAME, u"KUNBUS GmbH"),
             x509.NameAttribute(NameOID.COMMON_NAME, u"kunbus.de"),
