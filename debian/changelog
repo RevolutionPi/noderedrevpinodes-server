@@ -1,3 +1,10 @@
+noderedrevpinodes-server (1.3.1-1+deb12+1) bookworm; urgency=medium
+
+  * fix: Set restrictive file permissions for private key generation
+  * fix: Enforce correct file permissions for private key
+
+ -- Sven Sager <s.sager@kunbus.com>  Mon, 21 Sep 2026 15:45:16 +0200
+
 noderedrevpinodes-server (1.3.0-1+deb12+1) bookworm; urgency=medium
 
   * feat: Use main thread for asycnio
